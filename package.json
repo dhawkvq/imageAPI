@@ -48,14 +48,10 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "src/**/*.ts": [
-      "yarn eslint",
-      "yarn prettier --write"
-    ],
-    "src/**/*.test.ts": [
+    "src/**/**(test).ts": [
       "yarn eslint",
       "yarn prettier --write",
-      "yarn test-backend"
+      "yarn test"
     ]
   },
   "volta": {
