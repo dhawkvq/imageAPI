@@ -32,11 +32,14 @@ app.use("/api", imageApi);
 
 app.get("/download/:fileName", (req, res, next) => {
   const { fileName } = req.params;
+  logger.info(`GET /download/${fileName} accessed`);
   const picPath = `${uploadPaths.dev}/${fileName}`;
   if (fs.existsSync(picPath)) {
+    logger.info(`GET /download/${fileName} exists.... sending file`);
     res.download(picPath, fileName);
   } else {
     res.statusCode = 400;
+    logger.error(`GET /download/${fileName} does not exist`);
     next(new Error("file does not exist"));
   }
 });

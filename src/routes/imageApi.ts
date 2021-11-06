@@ -9,16 +9,20 @@ import { myCache } from "../cache";
 import multer from "multer";
 import { uploadPaths, TEST } from "../config";
 import { resizeImage } from "../api";
+import { logger } from "../log";
 
 const upload = multer();
 
 export const imageApi = Router();
 
 imageApi.get("/pictures", (req, res, next) => {
+  logger.info("GET /api/pictures accessed");
   fs.readdir(uploadPaths.dev, (err, files) => {
     if (!err) {
+      logger.info("GET /api/pictures success.... sending files");
       res.json(files);
     } else {
+      logger.error(`GET /api/pictures error: ${err}`);
       next(err);
     }
   });
@@ -26,6 +30,8 @@ imageApi.get("/pictures", (req, res, next) => {
 
 imageApi.post("/resize/:fileName", async (req, res, next) => {
   const { fileName } = req.params;
+  logger.info(`POST /api/resize/${fileName} accessed`);
+
   const { height, width }: ResizeOptions = req.body;
   const errorMessages: string[] = [];
 
@@ -42,6 +48,8 @@ imageApi.post("/resize/:fileName", async (req, res, next) => {
   }
   if (errorMessages.length) {
     res.statusCode = 400;
+    const joinedErrorMessages = errorMessages.join();
+    logger.error(`POST /api/resize/${fileName} errors: ${joinedErrorMessages}`);
     next(new Error(errorMessages.join()));
   } else {
     const options: ResizeOptions = req.body.options || {};
@@ -53,7 +61,9 @@ imageApi.post("/resize/:fileName", async (req, res, next) => {
     const picHashIdentifier = picKeyHash.slice(0, 8);
 
     if (existingFilePath) {
-      console.log("grabbing picture path from cache");
+      logger.info(
+        `POST /api/resize/${fileName} in cache.... sending image from cache`
+      );
       const curFileName = existingFilePath.split("uploads/")[1];
       res.download(existingFilePath, curFileName);
     } else {
@@ -87,13 +97,16 @@ imageApi.post("/resize/:fileName", async (req, res, next) => {
 
         const set = myCache.set(picKeyHash, filePath, TEST ? 5 : "");
         if (set) {
-          console.log("picture path was placed in cache");
+          logger.info(`POST /api/resize/${fileName} image placed in cache`);
         } else {
-          console.log("picture failed to be placed in cache");
+          logger.error(
+            `POST /api/resize/${fileName} error: failed to place image in cache`
+          );
         }
 
         res.download(filePath, fileName);
       } catch (error) {
+        logger.error(`POST /api/resize/${fileName} error: ${error}`);
         next(error);
       }
     }
@@ -101,6 +114,7 @@ imageApi.post("/resize/:fileName", async (req, res, next) => {
 });
 
 imageApi.post("/resize", upload.single("image"), async (req, res, next) => {
+  logger.info("POST /api/resize accessed");
   const { height, width }: ResizeOptions = req.body;
   const errorMessages: string[] = [];
   if (!req.file) {
@@ -111,6 +125,8 @@ imageApi.post("/resize", upload.single("image"), async (req, res, next) => {
   }
   if (errorMessages.length) {
     res.statusCode = 400;
+    const joinedErrorMessages = errorMessages.join();
+    logger.error(`POST /api/resize errors: ${joinedErrorMessages}`);
     next(new Error(errorMessages.join()));
   } else {
     // should be unreachable based off no file and error messages.length being present
@@ -126,7 +142,9 @@ imageApi.post("/resize", upload.single("image"), async (req, res, next) => {
     const existingFilePath: string | undefined = myCache.get(picKeyHash);
 
     if (existingFilePath) {
-      console.log("grabbing picture path from cache");
+      logger.info(
+        `POST /api/resize file:${originalname} in cache.... sending image from cache`
+      );
       const curFileName = existingFilePath.split("uploads/")[1];
       res.download(existingFilePath, curFileName);
     } else {
@@ -158,13 +176,16 @@ imageApi.post("/resize", upload.single("image"), async (req, res, next) => {
 
         const set = myCache.set(picKeyHash, filePath, TEST ? 5 : "");
         if (set) {
-          console.log("picture path was placed in cache");
+          logger.info(`POST /api/resize/${fileName} image placed in cache`);
         } else {
-          console.log("picture failed to be placed in cache");
+          logger.error(
+            `POST /api/resize/${fileName} error: failed to place image in cache`
+          );
         }
 
         res.download(filePath, fileName);
       } catch (error) {
+        logger.error(`POST /api/resize error: ${error}`);
         next(error);
       }
     }

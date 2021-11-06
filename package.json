@@ -49,7 +49,11 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "src/**/**(test).ts": [
+    "src/**/*.ts": [
+      "yarn eslint",
+      "yarn prettier --write"
+    ],
+    "src/**/*.spec.ts": [
       "yarn eslint",
       "yarn prettier --write",
       "yarn test"
