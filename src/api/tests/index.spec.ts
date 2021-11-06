@@ -5,8 +5,6 @@ import { uploadPaths } from "../../config";
 
 const image = path.join(__dirname, "../../test-images/nitro_flick.jpeg");
 
-console.log("check");
-
 describe("resizeImage function", () => {
   it("returns the proper content", (done) => {
     const picWidth = 300;

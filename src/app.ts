@@ -3,14 +3,22 @@ import fs from "fs";
 import { middleWare } from "./middleware";
 import { imageApi } from "./routes";
 import { uploadPaths } from "./config";
+import { logger } from "./log";
 
 // create upload directory if none exists
 for (const key in uploadPaths) {
   const path = uploadPaths[key];
   if (!fs.existsSync(path)) {
+    logger.info("upload does not exist... creating upload path");
     fs.mkdir(path, { recursive: true }, (error) => {
-      if (error) throw error;
+      if (error) {
+        logger.error(`error creating upload path: ${error}`);
+        throw error;
+      }
+      logger.info("upload path created");
     });
+  } else {
+    logger.info("upload path exists");
   }
 }
 
