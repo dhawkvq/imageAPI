@@ -4,6 +4,7 @@ import { middleWare } from "./middleware";
 import { imageApi } from "./routes";
 import { uploadPaths } from "./config";
 import { logger } from "./log";
+import { errorHandler } from "./utils/errorHandler";
 
 // create upload directory if none exists
 for (const key in uploadPaths) {
@@ -43,3 +44,5 @@ app.get("/download/:fileName", (req, res, next) => {
     next(new Error("file does not exist"));
   }
 });
+
+app.use(errorHandler);
