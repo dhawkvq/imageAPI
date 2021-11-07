@@ -2,6 +2,44 @@
 
 <br>
 
+## Prerequisites
+
+---
+
+**Node v16.x**
+
+```
+If you are using Volta for Node version management then you are set to go 🤘
+```
+
+<br>
+
+## Get started
+
+---
+
+Install the dependencies...
+
+```bash
+yarn
+```
+
+Set and place server url in .env file to whichever port you prefer...
+
+```bash
+echo "SERVER_URL=< your preferred port >" > .env
+
+EXAMPLE: echo "SERVER_URL=4000" > .env
+```
+
+Start the ImageApi server...
+
+```bash
+yarn start
+```
+
+<br>
+
 ## Scripts
 
 ---
@@ -27,6 +65,20 @@ Compile TS Server to JS ...
 ```
 yarn build
 ```
+
+Run Prettier Check...
+
+```
+yarn prettier
+```
+
+Run Lint Check...
+
+```
+yarn lint
+```
+
+<br>
 
 ## API
 

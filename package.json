@@ -46,6 +46,8 @@
     "start": "nodemon -w ts-node src/index.ts",
     "test": "TEST=true jasmine-ts --config=spec/support/jasmine.json",
     "build": "tsc --project ./",
+    "lint": "eslint",
+    "prettier": "prettier --check src",
     "prepare": "husky install"
   },
   "lint-staged": {
